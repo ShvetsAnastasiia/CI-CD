@@ -1,0 +1,30 @@
+from typing import Dict, List
+
+
+def read_file(filename: str) -> List[Dict[str, str]]:
+    """
+    Reads a file with population data in the format "country, year, population"
+    and returns a list of dictionaries containing the data.
+    """
+    data = []
+    with open(filename, 'r') as file:
+        for line in file:
+            country, year, population = line.strip().split(',')
+            data.append({'country': country, 'year': year, 'population': population})
+    return data
+
+
+def calculate_population_change(data: List[Dict[str, str]]) -> Dict[str, int]:
+    """
+    Calculates the population change for each country based on the given population data.
+    Returns a dictionary containing the country name as key and the population change as value.
+    """
+    population_change = {}
+    for i in range(len(data) - 1):
+        current_country = data[i]['country']
+        next_country = data[i+1]['country']
+        if current_country == next_country:
+            current_population = int(data[i]['population'])
+            next_population = int(data[i+1]['population'])
+            population_change[current_country] = population_change.get(current_country, 0) + (next_population - current_population)
+    return population_change
