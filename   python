@@ -1,0 +1,40 @@
+import pytest
+from population import read_file, calculate_population_change
+
+
+@pytest.fixture
+def sample_data():
+    return [
+        {'country': 'Ukraine', 'year': '2020', 'population': '44000000'},
+        {'country': 'Ukraine', 'year': '2021', 'population': '44100000'},
+        {'country': 'Russia', 'year': '2020', 'population': '144000000'},
+        {'country': 'Russia', 'year': '2021', 'population': '144500000'},
+        {'country': 'China', 'year': '2020', 'population': '1400000000'},
+        {'country': 'China', 'year': '2021', 'population': '1390000000'},
+    ]
+
+
+def test_read_file():
+    expected_result = [
+        {'country': 'Ukraine', 'year': '2020', 'population': '44000000'},
+        {'country': 'Ukraine', 'year': '2021', 'population': '44100000'},
+        {'country': 'Russia', 'year': '2020', 'population': '144000000'},
+        {'country': 'Russia', 'year': '2021', 'population': '144500000'},
+        {'country': 'China', 'year': '2020', 'population': '1400000000'},
+        {'country': 'China', 'year': '2021', 'population': '1390000000'},
+    ]
+    assert read_file('test_data.txt') == expected_result
+
+
+def test_calculate_population_change(sample_data):
+    expected_result = {'Ukraine': 1000000, 'Russia': 500000, 'China': -10000000}
+    assert calculate_population_change(sample_data) == expected_result
+
+
+@pytest.mark.parametrize('filename, expected_result', [
+    ('test_data.txt', {'Ukraine': 1000000, 'Russia': 500000, 'China': -10000000}),
+    ('test_data_2.txt', {'USA': 1000000, 'Canada': -500000, 'Mexico': 100000}),
+])
+def test_integration(filename, expected_result):
+    data = read_file(filename)
+    assert calculate_population_change(data) == expected_result
